@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
+//import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -19,9 +19,11 @@ import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
   private CANSparkMax m_motor;
+  private CANSparkMax m_motor2;
   private RelativeEncoder m_encoder;
   private SparkPIDController m_controller;
   private double m_setpoint;
+
 
   private TrapezoidProfile m_profile;
   private Timer m_timer;
@@ -30,19 +32,29 @@ public class ArmSubsystem extends SubsystemBase {
 
   private TrapezoidProfile.State m_targetState;
   private double m_feedforward;
-  private double m_manualValue;
+ // private double m_manualValue;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    // create a new SPARK MAX and configure it
+    // create a new SPARK MAX and configure it 7 inverted 6 not
     m_motor = new CANSparkMax(Constants.Arm.kArmCanId, MotorType.kBrushless);
+    //m_motor.restoreFactoryDefaults();
     m_motor.setInverted(false);
     m_motor.setSmartCurrentLimit(Constants.Arm.kCurrentLimit);
-    m_motor.setIdleMode(IdleMode.kBrake);
-    m_motor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    m_motor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_motor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.kSoftLimitForward);
-    m_motor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.kSoftLimitReverse);
+    m_motor.setIdleMode(IdleMode.kCoast);
+
+    m_motor2 = new CANSparkMax(Constants.Arm.kArmCanId2, MotorType.kBrushless);
+    //m_motor2.restoreFactoryDefaults();
+    //m_motor2.setInverted(true);
+    //m_motor2.setSmartCurrentLimit(Constants.Arm.kCurrentLimit);
+    //m_motor2.setIdleMode(IdleMode.kCoast);
+   //m_motor2.follow(m_motor);
+    // m_motor2.burnFlash();
+   
+    //m_motor.enableSoftLimit(SoftLimitDirection.kForward, true); 
+    //m_motor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    //m_motor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.kSoftLimitForward);
+   // m_motor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.kSoftLimitReverse);
 
     // set up the motor encoder including conversion factors to convert to radians and radians per
     // second for position and velocity
@@ -54,9 +66,13 @@ public class ArmSubsystem extends SubsystemBase {
     m_controller = m_motor.getPIDController();
     PIDGains.setSparkMaxGains(m_controller, Constants.Arm.kArmPositionGains);
 
-    m_motor.burnFlash();
+    
+   
 
-    m_setpoint = Constants.Arm.kHomePosition;
+    
+    m_motor.burnFlash();
+   // m_motor2.burnFlash();
+    m_setpoint = Constants.Arm.kScoringPosition;
 
     m_timer = new Timer();
     m_timer.start();
@@ -126,7 +142,7 @@ public class ArmSubsystem extends SubsystemBase {
             m_encoder.getPosition() + Constants.Arm.kArmZeroCosineOffset, m_targetState.velocity);
     // set the power of the motor
     m_motor.set(_power + (m_feedforward / 12.0));
-    m_manualValue = _power; // this variable is only used for logging or debugging if needed
+   // m_manualValue = _power; // this variable is only used for logging or debugging if needed
   }
 
   @Override

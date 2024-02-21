@@ -23,17 +23,20 @@ import frc.lib.PIDGains;
 public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kCoDriverControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
     public static final double kTriggerButtonThreshold = 0.5;
   }
 
   public static final class Arm {
-    public static final int kArmCanId = 2;
+    public static final int kArmCanId = 7;
+    public static final int kArmCanId2 = 6;
+
     public static final boolean kArmInverted = true;
     public static final int kCurrentLimit = 40;
 
-    public static final double kSoftLimitReverse = -1.15;
-    public static final double kSoftLimitForward = 0.0;
+   // public static final double kSoftLimitReverse = 5;
+    /*public static final double kSoftLimitForward = 1;*/
 
     public static final double kArmGearRatio = (1.0 / 25.0) * (28.0 / 50.0) * (16.0 / 64.0);
     public static final double kPositionFactor =
@@ -51,20 +54,24 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kArmMotionConstraint =
         new TrapezoidProfile.Constraints(1.0, 2.0);
 
-    public static final double kHomePosition = 0.0;
-    public static final double kScoringPosition = 0.0;
-    public static final double kIntakePosition = -1.17;
+    public static final double kHomePosition = 0.45;
+    public static final double kScoringPosition = 2;//1.8
+    public static final double kIntakePosition = -6.25;//-6.2
+    public static final double kScoringFrontPosition = -2.1;//-2.2
   }
 
   public static final class Intake {
-    public static final int kCanId = 1;
+    public static final int kCanId = 8;
+    public static final int kCanId2 = 9;
+    public static final int kCanId3 = 4;
+    public static final int kCanId4 = 5;
     public static final boolean kMotorInverted = true;
-    public static final int kCurrentLimit = 80;
+    public static final int kCurrentLimit = 40;
 
     public static final PIDGains kPositionGains = new PIDGains(1.0, 0.0, 0.0);
     public static final double kPositionTolerance = 0.5;
 
-    public static final double kIntakePower = 0.7;
+    public static final double kIntakePower = 0.9;
 
     public static final double kRetractDistance = -3.5;
 
@@ -73,12 +80,15 @@ public final class Constants {
 
   public static final class Launcher {
     public static final int kTopCanId = 3;
-    public static final int kBottomCanId = 4;
+    public static final int kBottomCanId = 2;
 
-    public static final int kCurrentLimit = 80;
+    public static final int kCurrentLimit = 60;
 
-    public static final double kTopPower = 0.7;
-    public static final double kBottomPower = 0.8;
+    public static final double kTopPower = 0.9;
+    public static final double kBottomPower = 0.9;
+
+    public static final double kAmpTopPower = 0.2;
+    public static final double kAmpBottomPower = 0.2;
   }
 
   public static final class DriveConstants {
@@ -120,14 +130,14 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 14;
     public static final int kRearRightTurningCanId = 16;
 
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
   }
 
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
     // This changes the drive speed of the module (a pinion gear with more teeth will result in a
     // robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 14;
+    public static final int kDrivingMotorPinionTeeth = 13;
 
     // Invert the turning encoder, since the output shaft rotates in the opposite direction of
     // the steering motor in the MAXSwerve Module.

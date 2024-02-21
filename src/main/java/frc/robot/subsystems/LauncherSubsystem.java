@@ -12,12 +12,15 @@ public class LauncherSubsystem extends SubsystemBase {
   private CANSparkMax m_bottomMotor;
 
   private boolean m_launcherRunning;
+  private boolean m_launcherAmp;
+ // private boolean m_intake;
 
   /** Creates a new LauncherSubsystem. */
   public LauncherSubsystem() {
     // create two new SPARK MAXs and configure them
     m_topMotor =
         new CANSparkMax(Constants.Launcher.kTopCanId, CANSparkLowLevel.MotorType.kBrushless);
+    m_topMotor.restoreFactoryDefaults();
     m_topMotor.setInverted(false);
     m_topMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
     m_topMotor.setIdleMode(IdleMode.kBrake);
@@ -26,13 +29,16 @@ public class LauncherSubsystem extends SubsystemBase {
 
     m_bottomMotor =
         new CANSparkMax(Constants.Launcher.kBottomCanId, CANSparkLowLevel.MotorType.kBrushless);
-    m_bottomMotor.setInverted(false);
+    m_bottomMotor.restoreFactoryDefaults();
+    m_bottomMotor.setInverted(true);
     m_bottomMotor.setSmartCurrentLimit(Constants.Launcher.kCurrentLimit);
     m_bottomMotor.setIdleMode(IdleMode.kBrake);
 
     m_bottomMotor.burnFlash();
 
     m_launcherRunning = false;
+    m_launcherAmp = false;
+   // m_intake = false;
   }
 
   /**
@@ -47,8 +53,33 @@ public class LauncherSubsystem extends SubsystemBase {
    * Turns the launcher off. Can be run once and the launcher will stay running or run continuously
    * in a {@code RunCommand}.
    */
+  public void stopAmp() {
+    m_launcherAmp = false;
+  }
+
+    public void runAmp() {
+    m_launcherAmp = true;
+  }
+
+  /**
+   * Turns the launcher off. Can be run once and the launcher will stay running or run continuously
+   * in a {@code RunCommand}.
+   */
   public void stopLauncher() {
     m_launcherRunning = false;
+  }
+
+    public void setIntake(double power) {
+      m_bottomMotor.set(power);
+      m_topMotor.set(power);
+  }
+
+  /**
+   * Turns the launcher off. Can be run once and the launcher will stay running or run continuously
+   * in a {@code RunCommand}.
+   */
+  public void stopIntake() {
+   // m_intake = false;
   }
 
   @Override
@@ -61,5 +92,14 @@ public class LauncherSubsystem extends SubsystemBase {
       m_topMotor.set(0.0);
       m_bottomMotor.set(0.0);
     }
+    if (m_launcherAmp) {
+      m_topMotor.set(Constants.Launcher.kAmpTopPower);
+      m_bottomMotor.set(Constants.Launcher.kAmpBottomPower);
+    } else if(m_launcherRunning && m_launcherAmp) {
+      m_topMotor.set(0.0);
+      m_bottomMotor.set(0.0);
+    }
+
+
   }
 }

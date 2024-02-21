@@ -44,6 +44,7 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_codriverController = new XboxController(OIConstants.kCoDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,38 +87,45 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // button to put swerve modules in an "x" configuration to hold position
-    new JoystickButton(m_driverController, XboxController.Button.kLeftStick.value)
+    new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new RunCommand(() -> m_robotDrive.setX(), m_robotDrive));
 
     // set up arm preset positions
-    new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value)
+    new JoystickButton(m_codriverController, XboxController.Button.kLeftBumper.value)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringPosition)));
     new Trigger(
             () ->
-                m_driverController.getLeftTriggerAxis()
+                m_codriverController.getLeftTriggerAxis()
                     > Constants.OIConstants.kTriggerButtonThreshold)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kIntakePosition)));
-    new JoystickButton(m_driverController, XboxController.Button.kStart.value)
+    new JoystickButton(m_codriverController, XboxController.Button.kStart.value)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kHomePosition)));
+        new JoystickButton(m_codriverController, XboxController.Button.kBack.value)
+        .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringFrontPosition)));
 
     // intake controls (run while button is held down, run retract command once when the button is
     // released)
     new Trigger(
             () ->
-                m_driverController.getRightTriggerAxis()
+                m_codriverController.getRightTriggerAxis()
                     > Constants.OIConstants.kTriggerButtonThreshold)
-        .whileTrue(new RunCommand(() -> m_intake.setPower(Constants.Intake.kIntakePower), m_intake))
-        .onFalse(m_intake.retract());
+        .whileTrue(
+            new RunCommand(() -> m_intake.setPower(Constants.Intake.kIntakePower) , m_intake) 
+            )
+        .onFalse( new RunCommand(() -> m_intake.setPower(0) , m_intake) 
+            );
 
-    new JoystickButton(m_driverController, XboxController.Button.kY.value)
-        .whileTrue(new RunCommand(() -> m_intake.setPower(-1.0)));
+    new JoystickButton(m_codriverController, XboxController.Button.kY.value)
+        .whileTrue(new RunCommand(() -> m_launcher.setIntake(-.7)));
 
     // launcher controls (button to pre-spin the launcher and button to launch)
-    new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value)
+    new JoystickButton(m_codriverController, XboxController.Button.kRightBumper.value)
         .whileTrue(new RunCommand(() -> m_launcher.runLauncher(), m_launcher));
 
-    new JoystickButton(m_driverController, XboxController.Button.kA.value)
+    new JoystickButton(m_codriverController, XboxController.Button.kA.value)
         .onTrue(m_intake.feedLauncher(m_launcher));
+    new JoystickButton(m_codriverController, XboxController.Button.kX.value)
+        .onTrue(m_intake.feedAMP(m_launcher));
   }
 
   /**
