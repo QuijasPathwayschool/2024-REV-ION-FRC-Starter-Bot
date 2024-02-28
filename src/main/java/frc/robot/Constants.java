@@ -46,18 +46,21 @@ public final class Constants {
     public static final double kVelocityFactor = kArmGearRatio * 2.0 * Math.PI / 60.0;
     public static final double kArmFreeSpeed = 5676.0 * kVelocityFactor;
     public static final double kArmZeroCosineOffset =
-        1.342; // radians to add to converted arm position to get real-world arm position (starts at
+        1.140; //1.340 radians to add to converted arm position to get real-world arm position (starts at
     // ~76.9deg angle)
     public static final ArmFeedforward kArmFeedforward =
         new ArmFeedforward(0.0, 3.0, 12.0 / kArmFreeSpeed, 0.0);
-    public static final PIDGains kArmPositionGains = new PIDGains(2.5, 0.0, 0.0);
+    public static final PIDGains kArmPositionGains = new PIDGains(2.5, 0.0, 0);
     public static final TrapezoidProfile.Constraints kArmMotionConstraint =
-        new TrapezoidProfile.Constraints(1.0, 2.0);
+        new TrapezoidProfile.Constraints(1, 2);
 
-    public static final double kHomePosition = 0.45;
-    public static final double kScoringPosition = 2;//1.8
-    public static final double kIntakePosition = -6.25;//-6.2
-    public static final double kScoringFrontPosition = -2.1;//-2.2
+    public static final double kHomePosition =5.5;//.45
+    public static final double kScoringPosition = 6.35;//1.8
+    public static final double kIntakePosition = 0;//-6.2
+    public static final double kScoringFrontPosition = 3.7;//-2.2
+    public static final double kClosefrontPosition =4.1;//.45
+    public static final double kScoringFarPosition =6.8;//.45
+
   }
 
   public static final class Intake {
@@ -84,11 +87,11 @@ public final class Constants {
 
     public static final int kCurrentLimit = 60;
 
-    public static final double kTopPower = 0.9;
-    public static final double kBottomPower = 0.9;
+    public static final double kTopPower = 0.92;
+    public static final double kBottomPower = 0.92;
 
-    public static final double kAmpTopPower = 0.2;
-    public static final double kAmpBottomPower = 0.2;
+    public static final double kAmpTopPower = 0.4;
+public static final double kAmpBottomPower = 0.4;
   }
 
   public static final class DriveConstants {

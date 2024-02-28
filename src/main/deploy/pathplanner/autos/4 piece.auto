@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.454549670868242,
+      "y": 5.550936522700434
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 piece left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4piecesecond shot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shootnmove"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lastshot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

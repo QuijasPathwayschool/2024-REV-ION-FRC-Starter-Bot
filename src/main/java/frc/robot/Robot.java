@@ -51,6 +51,8 @@ public class Robot extends TimedRobot {
           // Set the resolution
           camera.setResolution(320, 240);
           camera2.setResolution(320, 240);
+          camera.setFPS(12);
+          camera2.setFPS(12);
 
           // Get a CvSink. This will capture Mats from the camera
           CvSink cvSink = CameraServer.getVideo();

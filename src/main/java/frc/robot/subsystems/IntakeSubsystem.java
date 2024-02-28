@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.PIDGains;
 import frc.robot.Constants;
-//import frc.robot.subsystems.LauncherSubsystem;;
+import frc.robot.subsystems.LauncherSubsystem;
+
+
 public class IntakeSubsystem extends SubsystemBase {
 
   private CANSparkMax m_motor;
@@ -21,6 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax m_motor4;
   private RelativeEncoder m_encoder;
   private SparkPIDController m_controller;
+ 
   //private final LauncherSubsystem m_launcher = new LauncherSubsystem();
 
   private boolean m_positionMode;
@@ -36,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_motor.setIdleMode(IdleMode.kBrake);
     m_motor.burnFlash();
 
-     m_motor2 = new CANSparkMax(Constants.Intake.kCanId2, MotorType.kBrushless);
+    m_motor2 = new CANSparkMax(Constants.Intake.kCanId2, MotorType.kBrushless);
     m_motor2.setInverted(true);
     m_motor2.setSmartCurrentLimit(Constants.Intake.kCurrentLimit);
     m_motor2.setIdleMode(IdleMode.kBrake);
@@ -82,6 +85,25 @@ public class IntakeSubsystem extends SubsystemBase {
     m_power = _power;
   }
 
+  public void setintakepower(double _power){
+    m_motor.set(_power);
+    //m_motor2.set(_power);
+
+  }
+
+  public void setfeedPower(double _power) {
+    //m_positionMode = false;
+    //m_targetPosition = m_encoder.getPosition();
+    m_motor3.set(_power);
+    m_motor4.set(_power);
+  }
+
+  public void stopfeedPower(double _power) {
+    //m_positionMode = false;
+    //m_targetPosition = m_encoder.getPosition();
+    m_motor3.set(0);
+    m_motor4.set(0);
+  }
   /**
    * Constructs a command that drives the rollers a specific distance (number of rotations) from the
    * current position and then ends the command.
@@ -175,8 +197,8 @@ public class IntakeSubsystem extends SubsystemBase {
           @Override
           public void execute() {
            // setPower(1.0);
-           m_motor3.set(-.5);
-           m_motor4.set(-.5);
+           m_motor3.set(-.4);
+           m_motor4.set(-.4);
           _launcher.runAmp();
           }
 
@@ -228,4 +250,25 @@ public class IntakeSubsystem extends SubsystemBase {
     return Math.abs(m_encoder.getPosition() - m_targetPosition)
         < Constants.Intake.kPositionTolerance;
   }
+
+    
+public void shoot () {
+  setfeedPower(-.92);
 }
+public void stopshoot () {
+  stopfeedPower(0);
+}
+
+
+  public void intake(){
+    setPower(Constants.Intake.kIntakePower);
+  }
+
+  public void stopintake() {
+    setPower(0);
+  }
+
+}
+
+
+

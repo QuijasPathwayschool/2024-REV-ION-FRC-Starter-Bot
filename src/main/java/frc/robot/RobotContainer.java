@@ -4,6 +4,13 @@
 
 package frc.robot;
 
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,9 +20,15 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,6 +40,8 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.utils.GamepadUtils;
+
+import java.time.Instant;
 import java.util.List;
 
 /*
@@ -41,6 +56,8 @@ public class RobotContainer {
   private final ArmSubsystem m_arm = new ArmSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
+  private final SendableChooser<Command> autoChooser;
+ // private SendableChooser<Command> autoChooser  = new SendableChooser<>();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -48,8 +65,26 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    //named commands
+    NamedCommands.registerCommand("Automatic", new InstantCommand(() -> m_arm.runAutomatic(), m_arm));
+    NamedCommands.registerCommand("runLauncher", new RunCommand(()-> m_launcher.shoot(), m_launcher));
+    NamedCommands.registerCommand("runLauncherfeed", new RunCommand(()-> m_intake.shoot(), m_intake));
+   // NamedCommands.registerCommand("setfeedPower-1", new InstantCommand(() -> m_intake.setfeedPower(-1),m_intake));
+    NamedCommands.registerCommand("setfeedPower0", new InstantCommand(() -> m_intake.stopshoot() ,m_intake));
+   // NamedCommands.registerCommand("stopLauncher", new InstantCommand(() -> m_launcher.stopLauncher(), m_launcher));
+    NamedCommands.registerCommand("setIntakePosition", new InstantCommand(() -> m_arm.intake() , m_arm));
+    NamedCommands.registerCommand("m_launcher.setIntake-0.9", new RunCommand(() -> m_launcher.intakein(), m_launcher ));
+    NamedCommands.registerCommand("m_intake.setPower", new RunCommand(() -> m_intake.intake(), m_intake));
+    NamedCommands.registerCommand("m_launcher.setIntake0", new RunCommand(() -> m_launcher.stopIntake() , m_launcher));
+    NamedCommands.registerCommand("m_intake.setPower0", new InstantCommand(() -> m_intake.stopintake(), m_intake));
+    NamedCommands.registerCommand("setScoringPosition", new InstantCommand(() -> m_arm.shoot() , m_arm));
+    NamedCommands.registerCommand("setScoringPositionFar", new InstantCommand(() -> m_arm.shootfar() , m_arm));
+   
     // Configure the button bindings
     configureButtonBindings();
+   
+    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -64,7 +99,7 @@ public class RobotContainer {
                         m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                     -GamepadUtils.squareInput(
                         m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                    true,
+                    false,
                     false),
             m_robotDrive));
 
@@ -86,6 +121,10 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    SmartDashboard.putData("2 piece", new PathPlannerAuto("2 piece"));
+    SmartDashboard.putData("4 piece", new PathPlannerAuto("4 piece"));
+    SmartDashboard.putData("Side", new PathPlannerAuto("Side"));
+
     // button to put swerve modules in an "x" configuration to hold position
     new JoystickButton(m_driverController, XboxController.Button.kX.value)
         .whileTrue(new RunCommand(() -> m_robotDrive.setX(), m_robotDrive));
@@ -93,15 +132,27 @@ public class RobotContainer {
     // set up arm preset positions
     new JoystickButton(m_codriverController, XboxController.Button.kLeftBumper.value)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringPosition)));
-    new Trigger(
+    
+        new Trigger(
             () ->
                 m_codriverController.getLeftTriggerAxis()
                     > Constants.OIConstants.kTriggerButtonThreshold)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kIntakePosition)));
-    new JoystickButton(m_codriverController, XboxController.Button.kStart.value)
+    
+        new JoystickButton(m_codriverController, XboxController.Button.kStart.value)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kHomePosition)));
+
+        new JoystickButton(m_codriverController, XboxController.Button.kLeftStick.value)
+        .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringFarPosition)));
+
+        new JoystickButton(m_codriverController, XboxController.Button.kRightStick.value)
+        .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kClosefrontPosition)));
+    
+    
         new JoystickButton(m_codriverController, XboxController.Button.kBack.value)
         .onTrue(new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringFrontPosition)));
+
+    
 
     // intake controls (run while button is held down, run retract command once when the button is
     // released)
@@ -115,8 +166,13 @@ public class RobotContainer {
         .onFalse( new RunCommand(() -> m_intake.setPower(0) , m_intake) 
             );
 
+    new JoystickButton(m_codriverController, XboxController.Button.kB.value)
+        .whileTrue(new RunCommand(() -> m_intake.setPower(-9) , m_intake) 
+            )
+        .onFalse( new RunCommand(() -> m_intake.setPower(0) , m_intake) );
+
     new JoystickButton(m_codriverController, XboxController.Button.kY.value)
-        .whileTrue(new RunCommand(() -> m_launcher.setIntake(-.7)));
+        .whileTrue(new RunCommand(() -> m_launcher.setIntake(-.9)));
 
     // launcher controls (button to pre-spin the launcher and button to launch)
     new JoystickButton(m_codriverController, XboxController.Button.kRightBumper.value)
@@ -124,6 +180,7 @@ public class RobotContainer {
 
     new JoystickButton(m_codriverController, XboxController.Button.kA.value)
         .onTrue(m_intake.feedLauncher(m_launcher));
+
     new JoystickButton(m_codriverController, XboxController.Button.kX.value)
         .onTrue(m_intake.feedAMP(m_launcher));
   }
@@ -134,47 +191,55 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+    //return autoChooser.getSelected();
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
+  
+  return new SequentialCommandGroup(
+        // Move arm to shooting position and wait 2 sec
+        new RunCommand(() -> m_arm.runAutomatic(), m_arm).withTimeout(2),
 
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        // run launcher and shoot
+        
+            new RunCommand(() -> m_launcher.runLauncher(), m_launcher).withTimeout(.5),
+            new RunCommand(() -> m_intake.setfeedPower(-1),m_intake).withTimeout(.5),
+            new RunCommand(() -> m_intake.setfeedPower(0),m_intake).withTimeout(.1),
+            new RunCommand(() -> m_launcher.stopLauncher(), m_launcher).withTimeout(.1),
 
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
+        // Move arm to intake position and start intake position
+        
+            new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kIntakePosition),m_arm),
+            //new RunCommand(() -> m_launcher.setIntake(-0.7), m_launcher).withTimeout(.5),
+            new RunCommand(() -> m_arm.runAutomatic(), m_arm).withTimeout(2.2),
+            
+        // Drive backward to pick up a game piece- running intake and shooter wheels backwards
+        new ParallelCommandGroup(
+        new RunCommand(() -> m_launcher.setIntake(-1), m_launcher),
+                 
+        new RunCommand(() -> m_intake.setintakepower(Constants.Intake.kIntakePower), m_intake),
 
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+            
+        new RunCommand(() -> m_robotDrive.drive(0.75, 0, 0, false, false), m_robotDrive)
+         ).withTimeout(.55),
+            
+            
+            new RunCommand(() -> m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive).withTimeout(.1),
+            
+            
+        // Lift arm to shooting position
+            new InstantCommand(() -> m_arm.setTargetPosition(Constants.Arm.kScoringFarPosition)),
+            new RunCommand(() -> m_arm.runAutomatic(), m_arm).withTimeout(2.5),
+        
+        
+        // Drive forward and shoot
+        new SequentialCommandGroup(
+            
+            new RunCommand(() -> m_launcher.runLauncher(), m_launcher).withTimeout(.5),
+            new RunCommand(() -> m_intake.setfeedPower(-1),m_intake).withTimeout(.5),
+            new RunCommand(() -> m_intake.setfeedPower(0),m_intake).withTimeout(.1),
+            new RunCommand(() -> m_launcher.stopLauncher(), m_launcher).withTimeout(.1)
+            //new RunCommand(() -> m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive)
+        )
+    );
+ 
   }
 }

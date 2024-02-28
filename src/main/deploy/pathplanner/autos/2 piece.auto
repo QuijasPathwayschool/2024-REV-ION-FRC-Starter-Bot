@@ -1,0 +1,146 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.56,
+      "y": 5.539225686154654
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Automatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runLauncher"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runLauncherfeed"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_intake.setPower0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_launcher.setIntake0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setIntakePosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Automatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.4
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_intake.setPower"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "m_launcher.setIntake-0.9"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "back"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "m_launcher.setIntake0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setfeedPower0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setScoringPositionFar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Automatic"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runLauncher"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "runLauncherfeed"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

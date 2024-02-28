@@ -79,7 +79,8 @@ public class LauncherSubsystem extends SubsystemBase {
    * in a {@code RunCommand}.
    */
   public void stopIntake() {
-   // m_intake = false;
+   m_bottomMotor.set(0);
+   m_topMotor.set(0);
   }
 
   @Override
@@ -101,5 +102,14 @@ public class LauncherSubsystem extends SubsystemBase {
     }
 
 
+  }
+
+  public void shoot() {
+    setIntake(1);
+
+  }
+  public void intakein() {
+      m_topMotor.set(-.9);
+      m_bottomMotor.set(-.9);
   }
 }
