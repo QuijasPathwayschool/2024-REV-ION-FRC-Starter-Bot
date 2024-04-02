@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.PIDGains;
 import frc.robot.Constants;
-import frc.robot.subsystems.LauncherSubsystem;
+import edu.wpi.first.wpilibj.Timer;
+//import frc.robot.subsystems.LauncherSubsystem;
 
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -36,13 +37,13 @@ public class IntakeSubsystem extends SubsystemBase {
     m_motor = new CANSparkMax(Constants.Intake.kCanId, MotorType.kBrushless);
     m_motor.setInverted(true);
     m_motor.setSmartCurrentLimit(Constants.Intake.kCurrentLimit);
-    m_motor.setIdleMode(IdleMode.kBrake);
+    m_motor.setIdleMode(IdleMode.kCoast);
     m_motor.burnFlash();
 
     m_motor2 = new CANSparkMax(Constants.Intake.kCanId2, MotorType.kBrushless);
     m_motor2.setInverted(true);
     m_motor2.setSmartCurrentLimit(Constants.Intake.kCurrentLimit);
-    m_motor2.setIdleMode(IdleMode.kBrake);
+    m_motor2.setIdleMode(IdleMode.kCoast);
     m_motor2.follow(m_motor);
     m_motor2.burnFlash();
 
@@ -113,15 +114,33 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command retract() {
     Command newCommand =
         new Command() {
+          private Timer timer = new Timer();
           @Override
           public void initialize() {
-            m_positionMode = true;
-            m_targetPosition = m_encoder.getPosition() + Constants.Intake.kRetractDistance;
+            timer.reset();
+            timer.start();
+
+           
+           // m_positionMode = true;
+            //m_targetPosition = m_encoder.getPosition() + Constants.Intake.kRetractDistance;
+          }
+
+          @Override
+          public void execute() {
+             m_motor3.set(-1);
+            m_motor4.set(-1);
           }
 
           @Override
           public boolean isFinished() {
-            return isNearTarget();
+            //check if timer has hit 0.20
+            return timer.hasElapsed(.30);
+          }
+
+           @Override
+          public void end(boolean interrupted){
+            m_motor3.set(0);
+             m_motor4.set(0);
           }
         };
 
@@ -155,6 +174,45 @@ public class IntakeSubsystem extends SubsystemBase {
            m_motor3.set(-1);
            m_motor4.set(-1);
             _launcher.runLauncher();
+          }
+
+          @Override
+          public boolean isFinished() {
+            return m_timer.get() > Constants.Intake.kShotFeedTime;
+          }
+
+          @Override
+          public void end(boolean interrupted) {
+            setPower(0.0);
+            m_motor3.set(0);
+            m_motor4.set(0);
+          }
+        };
+
+    newCommand.addRequirements(this, _launcher);
+
+    return newCommand;
+  }
+
+  public Command feedbackLauncher(LauncherSubsystem _launcher) {
+    Command newCommand =
+        new Command() {
+          private Timer m_timer;
+
+          @Override
+          public void initialize() {
+            m_timer = new Timer();
+            m_timer.start();
+          }
+
+          @Override
+          public void execute() {
+           // setPower(1.0);
+           _launcher.runbackLauncher();
+           
+           m_motor3.set(1);
+           m_motor4.set(1);
+            
           }
 
           @Override

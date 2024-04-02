@@ -2,33 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.38,
-      "y": 5.539225686154654
+      "x": 1.4,
+      "y": 2.01
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "retract"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot fwd"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Shoot"
-          }
-        },
         {
           "type": "deadline",
           "data": {
@@ -48,22 +30,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "center"
+                  "pathName": "wing"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.4
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop shoot intake"
+            "pathName": "shootmid"
           }
         },
         {
@@ -73,9 +49,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Stop shoot intake"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.05
+            "waitTime": 0.2
           }
         },
         {
@@ -94,12 +76,6 @@
           "type": "named",
           "data": {
             "name": "Stop Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop"
           }
         }
       ]

@@ -41,7 +41,7 @@ public class ArmSubsystem extends SubsystemBase {
     //m_motor.restoreFactoryDefaults();
     m_motor.setInverted(false);
     m_motor.setSmartCurrentLimit(Constants.Arm.kCurrentLimit);
-    m_motor.setIdleMode(IdleMode.kCoast);
+    m_motor.setIdleMode(IdleMode.kBrake);
 
     m_motor2 = new CANSparkMax(Constants.Arm.kArmCanId2, MotorType.kBrushless);
     //m_motor2.restoreFactoryDefaults();
@@ -72,7 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
     
     m_motor.burnFlash();
    // m_motor2.burnFlash();
-    m_setpoint = Constants.Arm.kScoringPosition;
+    m_setpoint = Constants.Arm.kIntakePosition;
 
     m_timer = new Timer();
     m_timer.start();

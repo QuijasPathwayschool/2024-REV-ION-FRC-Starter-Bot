@@ -1,15 +1,13 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [10]": {
+      "SPARK MAX [3]": {
         "header": {
           "open": true
         }
       },
-      "SPARK MAX [11]": {
-        "header": {
-          "open": true
-        }
+      "window": {
+        "visible": false
       }
     }
   },
@@ -21,7 +19,10 @@
       "/SmartDashboard/4test": "Command",
       "/SmartDashboard/Auto Mode": "String Chooser",
       "/SmartDashboard/Side": "Command",
-      "/SmartDashboard/test": "Command"
+      "/SmartDashboard/centernomove": "Command",
+      "/SmartDashboard/sourcenomove": "Command",
+      "/SmartDashboard/test": "Command",
+      "/SmartDashboard/wing": "Command"
     },
     "windows": {
       "/SmartDashboard/Auto Mode": {
@@ -32,6 +33,12 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Connections": {
+      "open": true
+    },
     "visible": true
   },
   "Plot": {

@@ -2,25 +2,31 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.81,
-      "y": 4.461828723942754
+      "x": 1.3725738150477713,
+      "y": 5.539225686154654
     },
-    "rotation": -57.26477372789233
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "side"
+            "name": "retract"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "sideshoot"
+            "name": "Shoot fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
           }
         }
       ]

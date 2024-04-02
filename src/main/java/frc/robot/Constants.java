@@ -55,11 +55,11 @@ public final class Constants {
         new TrapezoidProfile.Constraints(1, 2);
 
     public static final double kHomePosition =5.5;//.45
-    public static final double kScoringPosition = 6.35;//1.8
+    public static final double kScoringPosition = 6.3;//1.8
     public static final double kIntakePosition = 0;//-6.2
     public static final double kScoringFrontPosition = 3.7;//-2.2
-    public static final double kClosefrontPosition =4.1;//.45
-    public static final double kScoringFarPosition =6.8;//.45
+    public static final double kClosefrontPosition =2.15;//.45 // shuttle
+    public static final double kScoringFarPosition =7;//.45
 
   }
 
@@ -84,14 +84,16 @@ public final class Constants {
   public static final class Launcher {
     public static final int kTopCanId = 3;
     public static final int kBottomCanId = 2;
+    public static final int kBackLeftCanId = 20;
+    public static final int kBackRightCanId = 19;
 
     public static final int kCurrentLimit = 60;
 
-    public static final double kTopPower = 0.92;
-    public static final double kBottomPower = 0.92;
+    public static final double kTopPower = 0.95;
+    public static final double kBottomPower = 0.95;
 
     public static final double kAmpTopPower = 0.4;
-public static final double kAmpBottomPower = 0.4;
+    public static final double kAmpBottomPower = 0.4;
   }
 
   public static final class DriveConstants {

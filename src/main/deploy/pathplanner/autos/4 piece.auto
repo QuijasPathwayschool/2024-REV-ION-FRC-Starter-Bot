@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.454549670868242,
-      "y": 5.550936522700434
+      "x": 1.38,
+      "y": 5.54
     },
     "rotation": 0
   },
@@ -12,33 +12,222 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "4 piece left"
+            "name": "retract"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake floor"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "back"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4piecesecond shot"
+            "pathName": "fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop shoot intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "retract"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake floor"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "midleft"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "back"
+            "pathName": "leftmid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop shoot intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "retract"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake floor"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "midright"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shootnmove"
+            "pathName": "rightmid"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "lastshot"
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop shoot intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "retract"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot fwd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Shoot"
           }
         }
       ]
